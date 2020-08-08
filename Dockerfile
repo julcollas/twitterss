@@ -7,4 +7,4 @@ ADD . /app
 RUN pip3 install /app
 
 CMD gunicorn -w 4 twitterss.wsgi:app
-EXPOSE 8888
+EXPOSE 8000
