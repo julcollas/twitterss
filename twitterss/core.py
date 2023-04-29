@@ -8,11 +8,11 @@ from werkzeug.contrib.atom import AtomFeed
 from . import settings
 
 app = Flask(__name__)
-auth = tweepy.OAuthHandler(
-    settings.TWITTER_CONSUMER_KEY, settings.TWITTER_CONSUMER_SECRET
-)
-auth.set_access_token(
-    settings.TWITTER_ACCESS_TOKEN, settings.TWITTER_ACCESS_TOKEN_SECRET
+auth = tweepy.OAuth1UserHandler(
+    consumer_key=settings.TWITTER_CONSUMER_KEY,
+    consumer_secret=settings.TWITTER_CONSUMER_SECRET,
+    access_token=settings.TWITTER_ACCESS_TOKEN,
+    access_token_secret=settings.TWITTER_ACCESS_TOKEN_SECRET,
 )
 api = tweepy.API(auth)
 
@@ -39,8 +39,8 @@ def home():
         else True
     )
     return generate_response(
-        api.me().screen_name,
-        api.home_timeline(count=200, tweet_mode="extended"),
+        api.get_settings()["screen_name"],
+        api.home_timeline(count=50, tweet_mode="extended"),
         retweet,
         replies,
     )
@@ -60,7 +60,7 @@ def feed(username):
     )
     return generate_response(
         username,
-        api.user_timeline(username, count=200, tweet_mode="extended"),
+        api.user_timeline(screen_name=username, count=50, tweet_mode="extended"),
         retweet,
         replies,
     )
